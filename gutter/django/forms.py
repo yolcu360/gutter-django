@@ -5,8 +5,6 @@ from django.forms.widgets import Select, Textarea
 from django.utils.html import escape, conditional_escape
 from django.utils.encoding import force_unicode
 
-from itertools import chain
-
 from gutter.django.registry import operators, arguments
 from gutter.client.models import Switch, Condition
 
@@ -19,7 +17,7 @@ class OperatorSelectWidget(Select):
         self.arguments = arguments
         super(OperatorSelectWidget, self).__init__(*args, **kwargs)
 
-    def render_options(self, choices, selected_choices):
+    def render_options(self, selected_choices):
         def render_option(option_value, option_label):
             option_value = force_unicode(option_value)
             selected_html = (option_value in selected_choices) and u' selected="selected"' or ''
@@ -32,7 +30,7 @@ class OperatorSelectWidget(Select):
         selected_choices = set([force_unicode(v) for v in selected_choices])
         output = []
 
-        for option_value, option_label in chain(self.choices, choices):
+        for option_value, option_label in self.choices:
             if isinstance(option_label, (list, tuple)):
                 output.append(u'<optgroup label="%s">' % escape(force_unicode(option_value)))
                 for option in option_label:
